@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Farm2Consumer — Connecting farms with the people they feed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#123020;
+  --forest-2:#1B4A2E;
+  --leaf:#2E8B4F;
+  --leaf-soft:#DCEEE0;
+  --wheat:#E0A32E;
+  --wheat-soft:#FBEFD5;
+  --cream:#FBF7EE;
+  --paper:#FFFFFF;
+  --char:#23261F;
+  --muted:#6D7566;
+  --line:#E7E2D5;
+  --radius-l:28px;
+  --radius-m:18px;
+  --radius-s:12px;
+  --shadow-s:0 2px 10px rgba(18,48,32,.06);
+  --shadow-m:0 14px 40px -18px rgba(18,48,32,.28);
+  --shadow-l:0 30px 70px -30px rgba(18,48,32,.42);
+  --maxw:1160px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;background:var(--cream);color:var(--char);
+  font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Fraunces','Georgia',serif;font-weight:600;line-height:1.12;margin:0;letter-spacing:-.01em;}
+h1{font-size:clamp(2.4rem,5.4vw,4.1rem);}
+h2{font-size:clamp(1.8rem,3.4vw,2.7rem);}
+h3{font-size:1.22rem;}
+p{margin:0 0 1rem;}
+a{color:inherit;}
+button{font-family:inherit;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+.lede{font-size:1.06rem;color:var(--muted);max-width:62ch;}
+.sec{padding:86px 0;}
+.sec-tight{padding:56px 0;}
+.hidden{display:none !important;}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:60;transition:background .3s,box-shadow .3s,backdrop-filter .3s;}
+.nav.scrolled{background:rgba(251,247,238,.78);backdrop-filter:blur(14px);box-shadow:0 1px 0 rgba(18,48,32,.08);}
+.nav-in{display:flex;align-items:center;gap:20px;height:72px;}
+.logo{display:flex;align-items:center;gap:9px;font-family:'Fraunces',serif;font-weight:700;font-size:1.16rem;letter-spacing:-.02em;background:none;border:0;cursor:pointer;padding:0;color:var(--forest);}
+.logo span.mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(150deg,var(--leaf),var(--forest));display:grid;place-items:center;font-size:.95rem;}
+.nav-links{display:flex;gap:4px;margin-left:auto;}
+.nav-links button{background:none;border:0;padding:9px 14px;border-radius:999px;font-size:.92rem;font-weight:500;color:var(--muted);cursor:pointer;transition:color .2s,background .2s;}
+.nav-links button:hover{color:var(--forest);background:rgba(46,139,79,.09);}
+.nav-links button.on{color:var(--forest);background:var(--leaf-soft);font-weight:600;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;border-radius:999px;
+  padding:13px 24px;font-weight:600;font-size:.95rem;transition:transform .18s,box-shadow .25s,background .2s;}
+.btn:hover{transform:translateY(-2px);}
+.btn:active{transform:translateY(0);}
+.btn-primary{background:var(--forest);color:#fff;box-shadow:var(--shadow-m);}
+.btn-primary:hover{background:var(--forest-2);}
+.btn-gold{background:var(--wheat);color:#3B2A05;box-shadow:0 12px 30px -14px rgba(224,163,46,.9);}
+.btn-ghost{background:transparent;color:var(--forest);border:1.5px solid rgba(18,48,32,.2);}
+.btn-ghost:hover{border-color:var(--forest);background:rgba(255,255,255,.6);}
+.btn-sm{padding:10px 18px;font-size:.88rem;}
+.burger{display:none;margin-left:auto;background:none;border:1.5px solid var(--line);border-radius:12px;width:44px;height:44px;cursor:pointer;}
+.burger i{display:block;width:18px;height:2px;background:var(--forest);margin:3px auto;border-radius:2px;transition:transform .3s,opacity .2s;}
+.nav.open .burger i:nth-child(1){transform:translateY(5px) rotate(45deg);}
+.nav.open .burger i:nth-child(2){opacity:0;}
+.nav.open .burger i:nth-child(3){transform:translateY(-5px) rotate(-45deg);}
+
+@media(max-width:900px){
+  .nav-links{position:fixed;inset:72px 0 auto 0;flex-direction:column;gap:2px;background:var(--paper);
+    padding:14px 18px 22px;box-shadow:var(--shadow-m);transform:translateY(-130%);transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+  .nav.open .nav-links{transform:translateY(0);}
+  .nav-links button{text-align:left;padding:14px 12px;font-size:1rem;border-radius:14px;}
+  .burger{display:block;}
+  .nav-cta{display:none;}
+}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;padding:52px 0 20px;}
+.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:48px;align-items:center;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--leaf-soft);color:var(--forest-2);
+  font-size:.8rem;font-weight:600;padding:7px 14px;border-radius:999px;margin-bottom:20px;}
+.hero h1{margin-bottom:18px;}
+.hero h1 em{font-style:normal;color:var(--leaf);}
+.hero .lede{font-size:1.12rem;margin-bottom:28px;}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-stats{display:flex;gap:34px;margin-top:38px;flex-wrap:wrap;}
+.hero-stats div span{display:block;font-family:'Fraunces',serif;font-size:1.7rem;font-weight:700;color:var(--forest);}
+.hero-stats div small{color:var(--muted);font-size:.84rem;}
+.hero-visual{position:relative;height:440px;}
+.orb{position:absolute;inset:8% 6%;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(46,139,79,.28),rgba(46,139,79,0) 62%);filter:blur(6px);}
+.hero-visual svg{position:relative;width:100%;height:100%;}
+.leafspec{position:absolute;font-size:22px;opacity:.5;animation:sway 6s ease-in-out infinite;}
+@keyframes sway{0%,100%{transform:translateY(0) rotate(-6deg);}50%{transform:translateY(-10px) rotate(8deg);}}
+@media(max-width:960px){
+  .hero-grid{grid-template-columns:1fr;gap:12px;}
+  .hero-visual{height:320px;order:-1;}
+}
+
+/* ---------- generic blocks ---------- */
+.band{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.band-forest{background:linear-gradient(160deg,var(--forest) 0%,#0C2416 100%);color:#EFF3EC;}
+.band-forest h2,.band-forest h3{color:#fff;}
+.band-forest .lede{color:rgba(239,243,236,.72);}
+.head{max-width:640px;margin-bottom:38px;}
+.head h2{margin-bottom:12px;}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media(max-width:860px){.cards{grid-template-columns:1fr;}}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-l);padding:26px;box-shadow:var(--shadow-s);
+  transition:transform .25s,box-shadow .3s,border-color .25s;}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-m);border-color:rgba(46,139,79,.35);}
+.card h3{margin-bottom:8px;}
+.card p{color:var(--muted);font-size:.95rem;margin:0;}
+.card .ico{width:44px;height:44px;border-radius:14px;background:var(--wheat-soft);display:grid;place-items:center;font-size:1.25rem;margin-bottom:16px;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);}
+.reveal.in{opacity:1;transform:none;}
+
+/* ---------- gap section ---------- */
+.gap-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:22px;align-items:stretch;}
+.price-card{background:var(--paper);border-radius:var(--radius-l);padding:30px;text-align:center;border:1px solid var(--line);}
+.price-card.farmer{border-color:rgba(46,139,79,.4);}
+.price-card.consumer{border-color:rgba(224,163,46,.5);}
+.price-card .who{font-size:.82rem;font-weight:600;color:var(--muted);letter-spacing:.04em;}
+.price-card .amt{font-family:'Fraunces',serif;font-size:clamp(2.6rem,6vw,3.6rem);font-weight:700;color:var(--forest);line-height:1;margin:10px 0 4px;}
+.price-card .unit{color:var(--muted);font-size:.9rem;}
+.gap-mid{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;color:var(--muted);}
+.gap-mid strong{font-family:'Fraunces',serif;font-size:1.4rem;color:var(--wheat);}
+.flow-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin:34px 0 6px;}
+.flow-line b{font-family:'Fraunces',serif;font-size:1.5rem;color:var(--forest);background:var(--paper);border:1px solid var(--line);
+  border-radius:14px;padding:10px 18px;opacity:.25;transition:opacity .5s,transform .5s,border-color .5s;}
+.flow-line b.lit{opacity:1;transform:translateY(-3px);border-color:var(--leaf);}
+.flow-line i{color:var(--muted);font-style:normal;}
+@media(max-width:860px){.gap-grid{grid-template-columns:1fr;}}
+
+/* ---------- steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;position:relative;}
+.step{position:relative;}
+.step .n{font-family:'Fraunces',serif;font-size:2.4rem;color:var(--wheat);line-height:1;}
+.step h3{margin:10px 0 8px;}
+.step p{color:var(--muted);font-size:.95rem;}
+.steps-rail{height:2px;background:var(--line);position:relative;margin:0 0 26px;overflow:hidden;}
+.steps-rail span{position:absolute;inset:0 100% 0 0;background:linear-gradient(90deg,var(--leaf),var(--wheat));transition:right 1.4s ease;}
+.steps-rail.on span{right:0;}
+@media(max-width:860px){.steps{grid-template-columns:1fr;gap:18px;}}
+
+/* ---------- page shell ---------- */
+.page{display:none;}
+.page.active{display:block;animation:pagein .45s ease;}
+@keyframes pagein{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.page-head{padding:56px 0 8px;}
+.page-head h1{font-size:clamp(2rem,4.4vw,3.1rem);margin-bottom:12px;}
+
+/* ---------- forms ---------- */
+.form-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-l);padding:34px;box-shadow:var(--shadow-m);max-width:780px;}
+.progress-steps{display:flex;gap:8px;margin-bottom:26px;flex-wrap:wrap;}
+.pstep{flex:1;min-width:150px;padding-top:12px;border-top:3px solid var(--line);transition:border-color .3s;}
+.pstep small{color:var(--muted);font-size:.78rem;font-weight:600;}
+.pstep p{margin:2px 0 0;font-size:.95rem;font-weight:600;color:var(--muted);}
+.pstep.on{border-color:var(--leaf);}
+.pstep.on p{color:var(--forest);}
+.pstep.done{border-color:var(--wheat);}
+.field{margin-bottom:18px;}
+.field label{display:block;font-size:.9rem;font-weight:600;margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;padding:13px 15px;border-radius:14px;border:1.5px solid var(--line);
+  background:var(--cream);font-size:.97rem;font-family:inherit;color:var(--char);transition:border-color .2s,box-shadow .2s,background .2s;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--leaf);background:#fff;box-shadow:0 0 0 4px rgba(46,139,79,.14);}
+.field .help{font-size:.82rem;color:var(--muted);margin-top:6px;}
+.field .err{font-size:.82rem;color:#A33224;margin-top:6px;display:none;}
+.field.bad input,.field.bad select{border-color:#D06A5B;}
+.field.bad .err{display:block;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:640px){.two{grid-template-columns:1fr;}.form-card{padding:24px;}}
+.form-nav{display:flex;gap:12px;justify-content:space-between;margin-top:26px;}
+.chiprow{display:flex;flex-wrap:wrap;gap:10px;}
+.chip{border:1.5px solid var(--line);background:var(--cream);border-radius:999px;padding:10px 18px;font-size:.92rem;cursor:pointer;transition:.2s;}
+.chip:hover{border-color:var(--leaf);}
+.chip.on{background:var(--forest);color:#fff;border-color:var(--forest);}
+.success{text-align:center;padding:40px 10px;}
+.grow{font-size:2.6rem;display:inline-block;opacity:0;transform:scale(.4);animation:pop .5s forwards;}
+.grow:nth-child(2){animation-delay:.35s;}
+.grow:nth-child(3){animation-delay:.7s;}
+@keyframes pop{to{opacity:1;transform:scale(1);}}
+.tick{width:64px;height:64px;border-radius:50%;background:var(--leaf-soft);display:grid;place-items:center;margin:0 auto 18px;}
+.tick svg path{stroke-dasharray:40;stroke-dashoffset:40;animation:draw .7s .2s forwards ease;}
+@keyframes draw{to{stroke-dashoffset:0;}}
+
+/* ---------- products ---------- */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px;}
+.grid-p{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px;}
+.pcard{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-l);overflow:hidden;transition:transform .28s,box-shadow .3s;}
+.pcard:hover{transform:translateY(-6px);box-shadow:0 26px 50px -26px rgba(18,48,32,.45);}
+.pcard .thumb{height:150px;display:grid;place-items:center;font-size:3.6rem;overflow:hidden;}
+.pcard .thumb span{transition:transform .4s cubic-bezier(.2,.8,.2,1);}
+.pcard:hover .thumb span{transform:scale(1.16) rotate(-4deg);}
+.pcard .body{padding:20px;}
+.pmeta span:last-child{text-align:right;}
+.pcard h3{font-size:1.1rem;margin-bottom:2px;}
+.pcard .where{color:var(--muted);font-size:.86rem;margin-bottom:14px;}
+.pmeta{display:flex;justify-content:space-between;gap:12px;font-size:.84rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:12px;margin-bottom:14px;}
+.price-tag{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:var(--forest);}
+.pcard .btn{width:100%;}
+.demo-note{font-size:.85rem;color:var(--muted);background:var(--wheat-soft);border-radius:14px;padding:12px 16px;display:inline-block;}
+
+/* ---------- calculator ---------- */
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+@media(max-width:960px){.calc-grid{grid-template-columns:1fr;}}
+.slider-row{margin-bottom:22px;}
+.slider-row .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.slider-row .top label{font-weight:600;font-size:.94rem;}
+.slider-row .val{font-family:'Fraunces',serif;font-weight:700;color:var(--forest);font-size:1.1rem;}
+input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:999px;background:var(--leaf-soft);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--forest);
+  border:4px solid #fff;box-shadow:0 3px 10px rgba(18,48,32,.4);cursor:pointer;transition:transform .15s;}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12);}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--forest);border:4px solid #fff;cursor:pointer;}
+.result-card{background:linear-gradient(165deg,var(--forest),#0B2315);color:#fff;border-radius:var(--radius-l);padding:30px;box-shadow:var(--shadow-l);position:sticky;top:96px;}
+@media(max-width:960px){.result-card{position:static;}}
+.res-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.12);}
+.res-row small{color:rgba(255,255,255,.65);font-size:.86rem;}
+.res-row b{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:600;}
+.big-res{background:var(--wheat);color:#3B2A05;border-radius:22px;padding:22px;margin-top:20px;text-align:center;transition:transform .3s;}
+.big-res.pulse{animation:pulse .6s ease;}
+@keyframes pulse{0%{transform:scale(1);}45%{transform:scale(1.035);}100%{transform:scale(1);}}
+.big-res small{font-weight:600;font-size:.84rem;}
+.big-res .num{font-family:'Fraunces',serif;font-size:clamp(2.2rem,6vw,3rem);font-weight:700;line-height:1.05;}
+.bars{margin-top:22px;}
+.bar{margin-bottom:12px;}
+.bar small{display:block;color:rgba(255,255,255,.7);font-size:.8rem;margin-bottom:5px;}
+.bar .track{height:14px;border-radius:999px;background:rgba(255,255,255,.13);overflow:hidden;}
+.bar .fill{height:100%;border-radius:999px;width:0;transition:width .8s cubic-bezier(.2,.8,.2,1);}
+.fill-cur{background:rgba(255,255,255,.42);}
+.fill-dir{background:linear-gradient(90deg,var(--wheat),#F6D27A);}
+.calc-msg{margin-top:16px;font-size:.9rem;border-radius:14px;padding:12px 16px;display:none;}
+.calc-msg.warn{display:block;background:rgba(224,163,46,.18);color:#F6D27A;}
+.calc-msg.bad{display:block;background:rgba(214,110,92,.2);color:#FFC9BE;}
+.foot-note{font-size:.82rem;color:var(--muted);margin-top:16px;}
+
+/* ---------- survey ---------- */
+.survey-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-l);padding:34px;box-shadow:var(--shadow-m);max-width:720px;}
+.qbar{height:6px;background:var(--leaf-soft);border-radius:999px;overflow:hidden;margin-bottom:10px;}
+.qbar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--leaf),var(--wheat));transition:width .45s ease;}
+.qcount{font-size:.84rem;color:var(--muted);margin-bottom:22px;}
+.qtext{font-family:'Fraunces',serif;font-size:1.5rem;margin-bottom:20px;}
+.opts{display:grid;gap:10px;}
+.opt{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);background:var(--cream);border-radius:16px;
+  padding:15px 18px;cursor:pointer;font-size:.98rem;text-align:left;transition:.2s;}
+.opt:hover{border-color:var(--leaf);transform:translateX(3px);}
+.opt.on{border-color:var(--forest);background:var(--leaf-soft);font-weight:600;}
+.opt .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--muted);flex:none;transition:.2s;}
+.opt.on .dot{border-color:var(--forest);background:var(--forest);box-shadow:inset 0 0 0 3px #fff;}
+.qfade{animation:qin .3s ease;}
+@keyframes qin{from{opacity:0;transform:translateX(14px);}to{opacity:1;transform:none;}}
+
+/* ---------- dashboard ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:34px;}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr);}}
+.kpi{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-l);padding:24px;}
+.kpi b{display:block;font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,2.7rem);color:var(--forest);line-height:1;}
+.kpi small{color:var(--muted);font-size:.86rem;}
+.charts{display:grid;grid-template-columns:0.85fr 1.15fr;gap:20px;}
+@media(max-width:900px){.charts{grid-template-columns:1fr;}}
+.chart-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-l);padding:26px;}
+.chart-card h3{margin-bottom:4px;}
+.chart-card .sub{color:var(--muted);font-size:.86rem;margin-bottom:18px;}
+.donut-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap;justify-content:center;}
+.donut{position:relative;}
+.donut circle{transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1),opacity .2s;}
+.donut .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center;}
+.donut .mid b{font-family:'Fraunces',serif;font-size:1.9rem;color:var(--forest);display:block;line-height:1;}
+.donut .mid small{color:var(--muted);font-size:.76rem;}
+.legend{display:grid;gap:10px;font-size:.9rem;}
+.legend div{display:flex;align-items:center;gap:9px;}
+.legend i{width:12px;height:12px;border-radius:4px;display:block;}
+.vbars{display:flex;align-items:flex-end;gap:16px;height:210px;padding-top:10px;}
+.vbar{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end;cursor:default;}
+.vbar .col{width:100%;max-width:62px;border-radius:12px 12px 4px 4px;height:0;transition:height 1s cubic-bezier(.2,.8,.2,1),filter .2s;}
+.vbar:hover .col{filter:brightness(1.08) saturate(1.1);}
+.vbar small{font-size:.8rem;color:var(--muted);text-align:center;}
+.hbars{display:grid;gap:14px;}
+.hbar small{font-size:.86rem;display:flex;justify-content:space-between;margin-bottom:5px;}
+.hbar .track{height:16px;background:var(--leaf-soft);border-radius:999px;overflow:hidden;}
+.hbar .fill{height:100%;width:0;border-radius:999px;transition:width 1.1s cubic-bezier(.2,.8,.2,1);}
+.tip{position:fixed;z-index:90;background:var(--forest);color:#fff;font-size:.8rem;padding:7px 11px;border-radius:10px;
+  pointer-events:none;opacity:0;transform:translate(-50%,-140%);transition:opacity .15s;white-space:nowrap;}
+.tip.show{opacity:1;}
+
+/* ---------- CTA + footer ---------- */
+.cta{position:relative;overflow:hidden;border-radius:36px;padding:64px 34px;text-align:center;
+  background:linear-gradient(150deg,var(--forest),#0A2013);color:#fff;box-shadow:var(--shadow-l);}
+.cta h2{font-size:clamp(1.9rem,4.2vw,3rem);margin-bottom:14px;max-width:20ch;margin-inline:auto;}
+.cta p{color:rgba(255,255,255,.72);max-width:52ch;margin:0 auto 26px;}
+.cta .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.wheatfield{position:absolute;inset:auto 0 0 0;height:120px;opacity:.35;}
+footer{padding:52px 0 40px;border-top:1px solid var(--line);margin-top:70px;background:var(--paper);}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center;}
+.foot .tag{color:var(--muted);font-size:.9rem;max-width:34ch;}
+.footlinks{display:flex;gap:6px;flex-wrap:wrap;}
+.footlinks button{background:none;border:0;color:var(--muted);cursor:pointer;font-size:.9rem;padding:6px 10px;border-radius:8px;}
+.footlinks button:hover{color:var(--forest);background:var(--leaf-soft);}
+:focus-visible{outline:3px solid var(--wheat);outline-offset:2px;border-radius:6px;}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001s !important;transition-duration:.001s !important;}
+  html{scroll-behavior:auto;}
+}
+</style>
+</head>
+<body>
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <button class="logo" data-go="home" aria-label="Farm2Consumer home"><span class="mark">🌾</span> Farm2Consumer</button>
+    <nav class="nav-links" id="navlinks">
+      <button data-go="home" class="on">Home</button>
+      <button data-go="farmers">Farmers</button>
+      <button data-go="products">Products</button>
+      <button data-go="calculator">Profit calculator</button>
+      <button data-go="survey">Survey</button>
+      <button data-go="insights">Insights</button>
+    </nav>
+    <button class="btn btn-primary btn-sm nav-cta" data-go="calculator">Get started</button>
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><i></i><i></i><i></i></button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ================= HOME ================= -->
+<section class="page active" id="page-home">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">🌱 Student research prototype · demo data</span>
+        <h1>From farm to consumer.<br><em>More value for everyone.</em></h1>
+        <p class="lede">Helping farmers discover better selling opportunities while giving consumers access to fresh farm products.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" data-go="farmers">Register as farmer</button>
+          <button class="btn btn-ghost" data-go="products">Explore products</button>
+        </div>
+        <div class="hero-stats">
+          <div><span data-count="25">0</span><small>Farmers surveyed</small></div>
+          <div><span data-count="100">0</span><small>Consumers surveyed</small></div>
+          <div><span data-count="72" data-suffix="%">0</span><small>Farmers open to direct selling</small></div>
+        </div>
+      </div>
+      <div class="hero-visual" id="heroVisual">
+        <div class="orb"></div>
+        <span class="leafspec" style="left:6%;top:16%;">🌿</span>
+        <span class="leafspec" style="right:9%;top:28%;animation-delay:1.4s;">🍃</span>
+        <span class="leafspec" style="left:18%;bottom:12%;animation-delay:2.6s;">🌾</span>
+        <svg viewBox="0 0 520 440" aria-label="Animated journey from farm to consumer" role="img">
+          <defs>
+            <linearGradient id="pathgrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2E8B4F"/><stop offset="100%" stop-color="#E0A32E"/>
+            </linearGradient>
+            <filter id="soft"><feGaussianBlur stdDeviation="6"/></filter>
+          </defs>
+          <path id="journey" d="M92 84 C 250 96, 180 210, 300 214 C 420 218, 300 330, 150 356"
+                fill="none" stroke="#E7E2D5" stroke-width="3" stroke-linecap="round"/>
+          <path id="journeyLit" d="M92 84 C 250 96, 180 210, 300 214 C 420 218, 300 330, 150 356"
+                fill="none" stroke="url(#pathgrad)" stroke-width="3.5" stroke-linecap="round"
+                stroke-dasharray="900" stroke-dashoffset="900"/>
+          <g id="nodes"></g>
+          <g id="parcel"><circle r="15" fill="#FBF7EE" stroke="#E0A32E" stroke-width="2"/><text y="5" text-anchor="middle" font-size="14">📦</text></g>
+          <g id="dust"></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- gap -->
+  <div class="sec band">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2>The farm-to-market gap</h2>
+        <p class="lede">The same kilo of tomatoes changes hands several times before it reaches a kitchen. Each hop adds cost that the farmer never sees.</p>
+      </div>
+      <div class="gap-grid reveal">
+        <div class="price-card farmer">
+          <div class="who">Farmer receives</div>
+          <div class="amt">₹<span data-count="20">0</span></div>
+          <div class="unit">per kg of tomatoes</div>
+        </div>
+        <div class="gap-mid">
+          <strong>₹15</strong>
+          <span>the gap</span>
+        </div>
+        <div class="price-card consumer">
+          <div class="who">Consumer pays</div>
+          <div class="amt">₹<span data-count="35">0</span></div>
+          <div class="unit">per kg at the shop</div>
+        </div>
+      </div>
+      <div class="flow-line reveal" id="flowLine">
+        <b data-step>₹20</b><i>→</i><b data-step>₹25</b><i>→</i><b data-step>₹30</b><i>→</i><b data-step>₹35</b>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:.92rem;">Farmer · aggregator · wholesale mandi · retailer</p>
+      <div class="cards reveal" style="margin-top:44px;">
+        <div class="card"><div class="ico">📉</div><h3>Lower farmer earnings</h3><p>Prices are set at the point of sale, usually after harvest, when the farmer has the least room to negotiate.</p></div>
+        <div class="card"><div class="ico">🏷️</div><h3>Higher consumer prices</h3><p>Handling, transport and margin at every stage push the shelf price well above what the farm was paid.</p></div>
+        <div class="card"><div class="ico">🔗</div><h3>Long supply chain</h3><p>Three to four intermediaries are common, and each adds a day of travel and a share of the value.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- steps -->
+  <div class="sec">
+    <div class="wrap">
+      <div class="head reveal"><h2>How Farm2Consumer helps</h2><p class="lede">A three-step path from a farm profile to a visible direct-sale opportunity.</p></div>
+      <div class="steps-rail" id="stepsRail"><span></span></div>
+      <div class="steps reveal">
+        <div class="step"><div class="n">01</div><h3>Farmer registers</h3><p>A short farm profile captures crops, quantity, current selling price and the method used today.</p></div>
+        <div class="step"><div class="n">02</div><h3>Products get listed</h3><p>Each crop appears as a listing with quantity, harvest date and the price the farmer is asking.</p></div>
+        <div class="step"><div class="n">03</div><h3>Direct-sale opportunity becomes visible</h3><p>The calculator shows the earnings difference, so the farmer can judge whether selling direct is worth it.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- final CTA -->
+  <div class="sec-tight">
+    <div class="wrap">
+      <div class="cta reveal">
+        <svg class="wheatfield" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
+          <path id="wheat1" fill="rgba(224,163,46,.35)" d="M0 120 L0 70 Q150 40 300 66 T600 62 T900 70 T1200 56 L1200 120 Z"/>
+          <path id="wheat2" fill="rgba(46,139,79,.35)" d="M0 120 L0 86 Q160 60 320 84 T640 80 T960 88 T1200 74 L1200 120 Z"/>
+        </svg>
+        <h2>What if the farmer could keep more of the value?</h2>
+        <p>Farm2Consumer turns a simple idea into measurable insight.</p>
+        <div class="btns">
+          <button class="btn btn-gold" data-go="calculator">Calculate farmer profit</button>
+          <button class="btn btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.35)" data-go="products">Explore farm products</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FARMERS ================= -->
+<section class="page" id="page-farmers">
+  <div class="wrap page-head">
+    <h1>Tell us about your farm</h1>
+    <p class="lede">Three short steps. Everything you enter stays on this device — this is a research prototype, not a marketplace account.</p>
+  </div>
+  <div class="wrap sec-tight">
+    <div class="form-card" id="farmForm">
+      <div class="progress-steps">
+        <div class="pstep on" data-p="1"><small>Step 1</small><p>Farm profile</p></div>
+        <div class="pstep" data-p="2"><small>Step 2</small><p>Crop information</p></div>
+        <div class="pstep" data-p="3"><small>Step 3</small><p>Selling information</p></div>
+      </div>
+
+      <div class="fstep" data-step="1">
+        <div class="field"><label for="fName">Farmer name</label><input id="fName" type="text" placeholder="e.g. Harpreet Singh"><div class="err">Please enter your name.</div></div>
+        <div class="two">
+          <div class="field"><label for="fVillage">Village or city</label><input id="fVillage" type="text" placeholder="e.g. Jandiala Guru"><div class="err">Please enter your village or city.</div></div>
+          <div class="field"><label for="fPhone">Contact number</label><input id="fPhone" type="tel" inputmode="numeric" placeholder="10-digit mobile"><div class="err">Enter a 10-digit mobile number.</div></div>
+        </div>
+        <div class="field"><label for="fSize">Farm size (acres)</label><input id="fSize" type="number" min="0" step="0.5" placeholder="e.g. 4">
+          <div class="help">An approximate figure is fine.</div><div class="err">Enter a farm size greater than zero.</div></div>
+      </div>
+
+      <div class="fstep hidden" data-step="2">
+        <div class="field"><label for="fCrops">Main crops</label><input id="fCrops" type="text" placeholder="e.g. Wheat, tomatoes, potatoes"><div class="err">Please list at least one crop.</div></div>
+        <div class="two">
+          <div class="field"><label for="fPrice">Current selling price (₹ per kg)</label><input id="fPrice" type="number" min="0" step="0.5" placeholder="e.g. 20"><div class="err">Enter the price you receive today.</div></div>
+          <div class="field"><label for="fQty">Approximate quantity available (kg)</label><input id="fQty" type="number" min="0" step="10" placeholder="e.g. 1200"><div class="err">Enter a quantity greater than zero.</div></div>
+        </div>
+        <div class="field"><div class="help">This helps us understand the real gap between farm price and shop price.</div></div>
+      </div>
+
+      <div class="fstep hidden" data-step="3">
+        <div class="field">
+          <label>How do you sell today?</label>
+          <div class="chiprow" id="sellMethod">
+            <button type="button" class="chip" data-v="Mandi">Mandi</button>
+            <button type="button" class="chip" data-v="Trader">Trader</button>
+            <button type="button" class="chip" data-v="Direct">Direct</button>
+            <button type="button" class="chip" data-v="Other">Other</button>
+          </div>
+          <div class="err">Pick one selling method.</div>
+        </div>
+        <div class="field"><label for="fChallenge">Biggest challenge you face</label>
+          <textarea id="fChallenge" rows="3" placeholder="e.g. Price drops when everyone harvests at the same time"></textarea>
+          <div class="help">This helps us understand the real challenges farmers face.</div>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn btn-ghost" id="fBack" style="visibility:hidden">Back</button>
+        <button class="btn btn-primary" id="fNext">Continue</button>
+      </div>
+    </div>
+
+    <div class="form-card hidden" id="farmDone">
+      <div class="success">
+        <div><span class="grow">🌱</span> <span class="grow">🌾</span> <span class="grow">✓</span></div>
+        <h2 style="margin:18px 0 8px;">Farm profile added</h2>
+        <p class="lede" style="margin:0 auto 22px;" id="doneLine">Saved on this device as demo data.</p>
+        <div class="hero-cta" style="justify-content:center">
+          <button class="btn btn-primary" data-go="calculator">See the profit calculator</button>
+          <button class="btn btn-ghost" id="fAnother">Add another farm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRODUCTS ================= -->
+<section class="page" id="page-products">
+  <div class="wrap page-head">
+    <h1>Fresh from the farm</h1>
+    <p class="lede">Listings from farms in the study area. Prices are what the farmer is asking, not a shop price.</p>
+  </div>
+  <div class="wrap sec-tight">
+    <div class="filters" id="pFilters">
+      <button class="chip on" data-f="All">All</button>
+      <button class="chip" data-f="Vegetables">Vegetables</button>
+      <button class="chip" data-f="Fruits">Fruits</button>
+      <button class="chip" data-f="Grains">Grains</button>
+    </div>
+    <div class="grid-p" id="pGrid"></div>
+    <p style="margin-top:26px"><span class="demo-note">Demo research data. No payment or delivery is handled in this prototype.</span></p>
+  </div>
+</section>
+
+<!-- ================= CALCULATOR ================= -->
+<section class="page" id="page-calculator">
+  <div class="wrap page-head">
+    <h1>See what direct selling could change.</h1>
+    <p class="lede">Compare your current earnings with a potential direct-sale price.</p>
+  </div>
+  <div class="wrap sec-tight">
+    <div class="calc-grid">
+      <div class="form-card" style="max-width:none">
+        <div class="field"><label for="cCrop">Crop</label>
+          <select id="cCrop"><option>Tomatoes</option><option>Potatoes</option><option>Wheat</option><option>Carrots</option><option>Corn</option><option>Onions</option></select>
+        </div>
+        <div class="slider-row">
+          <div class="top"><label for="cQty">Quantity (kg)</label><span class="val" id="vQty">1,000</span></div>
+          <input type="range" id="cQty" min="0" max="10000" step="50" value="1000">
+        </div>
+        <div class="slider-row">
+          <div class="top"><label for="cCur">Current price received (₹/kg)</label><span class="val" id="vCur">₹20</span></div>
+          <input type="range" id="cCur" min="0" max="100" step="0.5" value="20">
+        </div>
+        <div class="slider-row">
+          <div class="top"><label for="cDir">Proposed direct-sale price (₹/kg)</label><span class="val" id="vDir">₹28</span></div>
+          <input type="range" id="cDir" min="0" max="100" step="0.5" value="28">
+        </div>
+        <div class="slider-row">
+          <div class="top"><label for="cCost">Delivery and packaging cost (₹ total)</label><span class="val" id="vCost">₹3,000</span></div>
+          <input type="range" id="cCost" min="0" max="40000" step="250" value="3000">
+        </div>
+        <div class="two">
+          <div class="field"><label for="cQtyN">Exact quantity (kg)</label><input type="number" id="cQtyN" min="0" step="1" value="1000"></div>
+          <div class="field"><label for="cCostN">Exact cost (₹)</label><input type="number" id="cCostN" min="0" step="10" value="3000"></div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="cReset">Reset values</button>
+      </div>
+
+      <div class="result-card" id="resultCard">
+        <div class="res-row"><small>Current farmer revenue</small><b id="rCur">₹20,000</b></div>
+        <div class="res-row"><small>Estimated direct-sale revenue</small><b id="rDir">₹25,000</b></div>
+        <div class="big-res" id="bigRes">
+          <small id="rAddLabel">Estimated additional revenue</small>
+          <div class="num" id="rAdd">₹5,000</div>
+          <small id="rPct">Potential increase: +25%</small>
+        </div>
+        <div class="bars">
+          <div class="bar"><small>Current</small><div class="track"><div class="fill fill-cur" id="barCur"></div></div></div>
+          <div class="bar"><small>Direct</small><div class="track"><div class="fill fill-dir" id="barDir"></div></div></div>
+        </div>
+        <div class="calc-msg" id="calcMsg"></div>
+      </div>
+    </div>
+    <p class="foot-note">Illustrative estimate based on the values entered. Actual earnings may vary with season, transport distance and buyer demand.</p>
+  </div>
+</section>
+
+<!-- ================= SURVEY ================= -->
+<section class="page" id="page-survey">
+  <div class="wrap page-head">
+    <h1>What would you buy direct from a farmer?</h1>
+    <p class="lede">Ten quick questions for consumers. Answers stay on this device and feed the demo dashboard.</p>
+  </div>
+  <div class="wrap sec-tight">
+    <div class="survey-card" id="surveyCard">
+      <div class="qbar"><span id="qFill"></span></div>
+      <div class="qcount" id="qCount">Question 1 of 10</div>
+      <div id="qBody"></div>
+      <div class="form-nav">
+        <button class="btn btn-ghost" id="qBack" style="visibility:hidden">Back</button>
+        <button class="btn btn-primary" id="qNext">Next</button>
+      </div>
+    </div>
+    <div class="survey-card hidden" id="surveyDone">
+      <div class="success">
+        <div class="tick"><svg width="34" height="34" viewBox="0 0 34 34" fill="none"><path d="M7 18l6.5 6.5L27 11" stroke="#2E8B4F" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h2 style="margin-bottom:10px;">Thank you</h2>
+        <p class="lede" style="margin:0 auto 22px;">Your response helps shape the future of direct farm-to-consumer selling.</p>
+        <div class="hero-cta" style="justify-content:center">
+          <button class="btn btn-primary" data-go="insights">See the research insights</button>
+          <button class="btn btn-ghost" id="qRestart">Take it again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INSIGHTS ================= -->
+<section class="page" id="page-insights">
+  <div class="wrap page-head">
+    <h1>Farm2Consumer research insights</h1>
+    <p class="lede">Results from the study sample of 25 farmers and 100 consumers. Demo research data.</p>
+  </div>
+  <div class="wrap sec-tight">
+    <div class="kpis">
+      <div class="kpi"><b data-count="25">0</b><small>Farmers surveyed</small></div>
+      <div class="kpi"><b data-count="100">0</b><small>Consumers surveyed</small></div>
+      <div class="kpi"><b data-count="72" data-suffix="%">0</b><small>Farmers interested in direct selling</small></div>
+      <div class="kpi"><b data-count="68" data-suffix="%">0</b><small>Consumers willing to buy directly</small></div>
+    </div>
+    <div class="charts">
+      <div class="chart-card">
+        <h3>Farmer interest in direct selling</h3>
+        <div class="sub">25 farmers, single response</div>
+        <div class="donut-wrap">
+          <div class="donut" style="width:190px;height:190px;">
+            <svg width="190" height="190" viewBox="0 0 190 190" id="donut">
+              <circle cx="95" cy="95" r="72" fill="none" stroke="var(--leaf-soft)" stroke-width="26"/>
+              <circle cx="95" cy="95" r="72" fill="none" stroke="#2E8B4F" stroke-width="26" stroke-linecap="round"
+                      transform="rotate(-90 95 95)" id="donutArc" data-label="Interested — 72%"></circle>
+            </svg>
+            <div class="mid"><b id="donutNum">72%</b><small>interested</small></div>
+          </div>
+          <div class="legend">
+            <div><i style="background:#2E8B4F"></i> Interested — 72%</div>
+            <div><i style="background:var(--leaf-soft)"></i> Not interested — 28%</div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Where consumers buy today</h3>
+        <div class="sub">100 consumers, single response</div>
+        <div class="vbars" id="vbars"></div>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-top:20px;">
+      <h3>What consumers value most</h3>
+      <div class="sub">100 consumers, one factor chosen as most important</div>
+      <div class="hbars" id="hbars"></div>
+    </div>
+    <p style="margin-top:24px"><span class="demo-note">Figures are study data for this prototype, not live marketplace statistics.</span></p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <div class="logo" style="margin-bottom:8px;"><span class="mark">🌾</span> Farm2Consumer</div>
+      <p class="tag">Connecting farms with the people they feed.</p>
+    </div>
+    <div class="footlinks">
+      <button data-go="home">Home</button><button data-go="farmers">Farmers</button><button data-go="products">Products</button>
+      <button data-go="calculator">Calculator</button><button data-go="survey">Survey</button><button data-go="insights">Insights</button>
+    </div>
+  </div>
+</footer>
+<div class="tip" id="tip"></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- safe local storage ---------- */
+var store={
+  get:function(k,d){try{var v=localStorage.getItem('f2c_'+k);return v?JSON.parse(v):d;}catch(e){return d;}},
+  set:function(k,v){try{localStorage.setItem('f2c_'+k,JSON.stringify(v));}catch(e){}}
+};
+
+var rupee=function(n){return '₹'+Math.round(n).toLocaleString('en-IN');};
+
+/* ---------- counters ---------- */
+function countTo(el){
+  if(el.dataset.done==='1') return;
+  el.dataset.done='1';
+  var target=parseFloat(el.dataset.count), suffix=el.dataset.suffix||'', t0=null, dur=reduce?1:1100;
+  function frame(t){
+    if(!t0) t0=t;
+    var p=Math.min((t-t0)/dur,1), e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*e).toLocaleString('en-IN')+suffix;
+    if(p<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ---------- reveal on scroll ---------- */
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(en){
+    if(!en.isIntersecting) return;
+    var el=en.target;
+    el.classList.add('in');
+    setTimeout(function(){el.style.transitionDelay='';},900);
+    $$('[data-count]',el).forEach(countTo);
+    if(el.dataset.count!==undefined) countTo(el);
+    if(el.id==='flowLine') litFlow();
+    if(el.id==='stepsRail') el.classList.add('on');
+    io.unobserve(el);
+  });
+},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+function observeAll(root){
+  $$('.reveal,[data-count],#flowLine,#stepsRail',root).forEach(function(el){io.observe(el);});
+}
+
+function litFlow(){
+  var b=$$('#flowLine b');
+  b.forEach(function(x,i){setTimeout(function(){x.classList.add('lit');}, reduce?0:i*260);});
+}
+
+/* ---------- router ---------- */
+var pages=['home','farmers','products','calculator','survey','insights'];
+function go(name,push){
+  if(pages.indexOf(name)<0) name='home';
+  $$('.page').forEach(function(p){p.classList.toggle('active',p.id==='page-'+name);});
+  $$('#navlinks button').forEach(function(b){b.classList.toggle('on',b.dataset.go===name);});
+  $('#nav').classList.remove('open');
+  $('#burger').setAttribute('aria-expanded','false');
+  window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+  if(push!==false && location.hash!=='#'+name) history.replaceState(null,'','#'+name);
+  observeAll($('#page-'+name));
+  if(name==='insights') drawCharts();
+  if(name==='calculator') calc(true);
+}
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-go]');
+  if(t){e.preventDefault();go(t.dataset.go);}
+});
+$('#burger').addEventListener('click',function(){
+  var n=$('#nav'); n.classList.toggle('open');
+  this.setAttribute('aria-expanded',n.classList.contains('open')?'true':'false');
+});
+window.addEventListener('scroll',function(){
+  $('#nav').classList.toggle('scrolled',window.scrollY>12);
+},{passive:true});
+
+/* ---------- hero animation ---------- */
+(function hero(){
+  var svg=$('#heroVisual svg'); if(!svg) return;
+  var path=$('#journey'), lit=$('#journeyLit'), nodes=$('#nodes'), parcel=$('#parcel'), dust=$('#dust');
+  var len=path.getTotalLength();
+  var stops=[{t:0,e:'🌾',l:'Farm'},{t:.36,e:'📦',l:'Product'},{t:.68,e:'🚚',l:'Direct'},{t:1,e:'🏠',l:'Consumer'}];
+  var ns='http://www.w3.org/2000/svg';
+  stops.forEach(function(s,i){
+    var pt=path.getPointAtLength(len*s.t);
+    var g=document.createElementNS(ns,'g');
+    g.setAttribute('opacity','0');
+    g.innerHTML='<circle cx="'+pt.x+'" cy="'+pt.y+'" r="30" fill="#fff" stroke="#E7E2D5"/>'+
+      '<text x="'+pt.x+'" y="'+(pt.y+9)+'" text-anchor="middle" font-size="26">'+s.e+'</text>'+
+      '<text x="'+pt.x+'" y="'+(pt.y+50)+'" text-anchor="middle" font-size="12.5" fill="#6D7566" font-family="Plus Jakarta Sans,sans-serif">'+s.l+'</text>';
+    nodes.appendChild(g);
+    setTimeout(function(){g.style.transition='opacity .5s ease';g.setAttribute('opacity','1');}, reduce?0:220*i);
+  });
+  if(reduce){ lit.setAttribute('stroke-dashoffset','0'); parcel.setAttribute('transform','translate(300,214)'); return; }
+  lit.style.transition='stroke-dashoffset 2.6s ease';
+  setTimeout(function(){lit.setAttribute('stroke-dashoffset','0');},400);
+
+  // floating particles
+  for(var i=0;i<14;i++){
+    var c=document.createElementNS(ns,'circle');
+    c.setAttribute('r',(Math.random()*2+1).toFixed(1));
+    c.setAttribute('fill', i%3?'#2E8B4F':'#E0A32E');
+    c.setAttribute('opacity','.35');
+    c.dataset.p=Math.random(); c.dataset.s=(Math.random()*.0016+.0006);
+    dust.appendChild(c);
+  }
+  var start=null;
+  function tick(ts){
+    if(!start) start=ts;
+    var el=(ts-start);
+    var t=(el%5200)/5200;
+    var p=path.getPointAtLength(len*t);
+    parcel.setAttribute('transform','translate('+p.x+','+p.y+')');
+    $$('#dust circle').forEach(function(c){
+      var v=(parseFloat(c.dataset.p)+parseFloat(c.dataset.s)*16)%1;
+      c.dataset.p=v;
+      var q=path.getPointAtLength(len*v);
+      c.setAttribute('cx',q.x+Math.sin(el/700+v*9)*13);
+      c.setAttribute('cy',q.y+Math.cos(el/900+v*7)*13);
+    });
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+/* ---------- farmer form ---------- */
+(function farmers(){
+  var step=1, method=store.get('method','');
+  var form=$('#farmForm'), next=$('#fNext'), back=$('#fBack');
+  if(method) $$('#sellMethod .chip').forEach(function(c){c.classList.toggle('on',c.dataset.v===method);});
+
+  $$('#sellMethod .chip').forEach(function(c){
+    c.addEventListener('click',function(){
+      $$('#sellMethod .chip').forEach(function(x){x.classList.remove('on');});
+      c.classList.add('on'); method=c.dataset.v;
+      c.closest('.field').classList.remove('bad');
+    });
+  });
+  function show(n){
+    step=n;
+    $$('.fstep',form).forEach(function(s){s.classList.toggle('hidden',+s.dataset.step!==n);});
+    $$('.pstep',form).forEach(function(p){
+      p.classList.toggle('on',+p.dataset.p===n);
+      p.classList.toggle('done',+p.dataset.p<n);
+    });
+    back.style.visibility=n===1?'hidden':'visible';
+    next.textContent=n===3?'Add farm profile':'Continue';
+  }
+  function bad(id,cond){
+    var f=$(id).closest('.field'); f.classList.toggle('bad',!!cond); return !cond;
+  }
+  function valid(n){
+    var ok=true;
+    if(n===1){
+      ok=bad('#fName',!$('#fName').value.trim())&&ok;
+      ok=bad('#fVillage',!$('#fVillage').value.trim())&&ok;
+      ok=bad('#fPhone',!/^\d{10}$/.test($('#fPhone').value.trim()))&&ok;
+      ok=bad('#fSize',!(parseFloat($('#fSize').value)>0))&&ok;
+    }
+    if(n===2){
+      ok=bad('#fCrops',!$('#fCrops').value.trim())&&ok;
+      ok=bad('#fPrice',!($('#fPrice').value!==''&&parseFloat($('#fPrice').value)>=0))&&ok;
+      ok=bad('#fQty',!(parseFloat($('#fQty').value)>0))&&ok;
+    }
+    if(n===3){
+      var f=$('#sellMethod').closest('.field');
+      f.classList.toggle('bad',!method); ok=!!method&&ok;
+    }
+    return ok;
+  }
+  next.addEventListener('click',function(){
+    if(!valid(step)) return;
+    if(step<3){show(step+1);return;}
+    var data={
+      name:$('#fName').value.trim(), village:$('#fVillage').value.trim(), phone:$('#fPhone').value.trim(),
+      size:$('#fSize').value, crops:$('#fCrops').value.trim(), price:$('#fPrice').value,
+      qty:$('#fQty').value, method:method, challenge:$('#fChallenge').value.trim()
+    };
+    var all=store.get('farms',[]); all.push(data); store.set('farms',all);
+    store.set('method',method);
+    $('#doneLine').textContent=data.name+' from '+data.village+' — '+data.crops+', about '+
+      (+data.qty).toLocaleString('en-IN')+' kg at ₹'+data.price+'/kg. Saved on this device as demo data.';
+    form.classList.add('hidden'); $('#farmDone').classList.remove('hidden');
+    // prefill the calculator with this farm
+    if(data.price){$('#cCur').value=Math.min(100,data.price);}
+    if(data.qty){$('#cQty').value=Math.min(10000,data.qty);$('#cQtyN').value=Math.min(10000,data.qty);}
+    calc(true);
+  });
+  back.addEventListener('click',function(){if(step>1)show(step-1);});
+  $('#fAnother').addEventListener('click',function(){
+    ['#fName','#fVillage','#fPhone','#fSize','#fCrops','#fPrice','#fQty','#fChallenge'].forEach(function(id){$(id).value='';});
+    $$('.field',form).forEach(function(f){f.classList.remove('bad');});
+    $('#farmDone').classList.add('hidden'); form.classList.remove('hidden'); show(1);
+  });
+  show(1);
+})();
+
+/* ---------- products ---------- */
+var PRODUCTS=[
+  {n:'Tomatoes',e:'🍅',cat:'Vegetables',farm:'Harpreet Singh · Jandiala Guru',qty:'820 kg',price:28,h:'Harvested 2 days ago',bg:'linear-gradient(150deg,#FCE6E0,#F7C9BC)'},
+  {n:'Potatoes',e:'🥔',cat:'Vegetables',farm:'Balwinder Kaur · Majitha',qty:'1,450 kg',price:24,h:'Harvested 5 days ago',bg:'linear-gradient(150deg,#F5EEDC,#E4D2AE)'},
+  {n:'Wheat',e:'🌾',cat:'Grains',farm:'Sukhdev Sharma · Rayya',qty:'3,200 kg',price:32,h:'Stored, this season',bg:'linear-gradient(150deg,#FBEFD5,#EFD79B)'},
+  {n:'Carrots',e:'🥕',cat:'Vegetables',farm:'Jaspreet Gill · Verka',qty:'540 kg',price:35,h:'Harvested today',bg:'linear-gradient(150deg,#FDE8D6,#F6CBA3)'},
+  {n:'Corn',e:'🌽',cat:'Grains',farm:'Manjit Singh · Tarn Taran',qty:'970 kg',price:30,h:'Harvested 3 days ago',bg:'linear-gradient(150deg,#FBF3D4,#EDDC98)'},
+  {n:'Onions',e:'🧅',cat:'Vegetables',farm:'Rajwinder Kaur · Chheharta',qty:'1,100 kg',price:26,h:'Harvested 4 days ago',bg:'linear-gradient(150deg,#F6EDE4,#DCC7B4)'},
+  {n:'Guava',e:'🍈',cat:'Fruits',farm:'Amrik Singh · Ajnala',qty:'380 kg',price:42,h:'Harvested yesterday',bg:'linear-gradient(150deg,#E7F3DE,#C7E2B4)'},
+  {n:'Kinnow',e:'🍊',cat:'Fruits',farm:'Gurpreet Dhillon · Attari',qty:'760 kg',price:38,h:'Harvested 2 days ago',bg:'linear-gradient(150deg,#FDEBD2,#F8CE96)'},
+  {n:'Mustard',e:'🌱',cat:'Grains',farm:'Satnam Singh · Beas',qty:'640 kg',price:45,h:'Stored, this season',bg:'linear-gradient(150deg,#EFF4DC,#D8E3AE)'}
+];
+function renderProducts(filter){
+  var grid=$('#pGrid'); grid.innerHTML='';
+  PRODUCTS.filter(function(p){return filter==='All'||p.cat===filter;}).forEach(function(p,i){
+    var el=document.createElement('article');
+    el.className='pcard reveal';
+    el.style.transitionDelay=(reduce?0:i*45)+'ms';
+    el.innerHTML='<div class="thumb" style="background:'+p.bg+'"><span>'+p.e+'</span></div>'+
+      '<div class="body"><h3>'+p.n+'</h3><div class="where">'+p.farm+'</div>'+
+      '<div class="pmeta"><span>'+p.qty+' available</span><span>'+p.h+'</span></div>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'+
+      '<span class="price-tag">₹'+p.price+'</span><span style="color:var(--muted);font-size:.85rem">per kg</span></div>'+
+      '<button class="btn btn-ghost btn-sm" data-view="'+p.n+'">View product</button></div>';
+    grid.appendChild(el);
+  });
+  observeAll(grid);
+}
+$('#pFilters').addEventListener('click',function(e){
+  var b=e.target.closest('.chip'); if(!b) return;
+  $$('#pFilters .chip').forEach(function(c){c.classList.remove('on');});
+  b.classList.add('on'); renderProducts(b.dataset.f);
+});
+$('#pGrid').addEventListener('click',function(e){
+  var b=e.target.closest('[data-view]'); if(!b) return;
+  var p=PRODUCTS.filter(function(x){return x.n===b.dataset.view;})[0];
+  $('#cCrop').value=['Tomatoes','Potatoes','Wheat','Carrots','Corn','Onions'].indexOf(p.n)>=0?p.n:'Tomatoes';
+  $('#cDir').value=Math.min(100,p.price);
+  $('#cCur').value=Math.max(0,Math.round(p.price*0.7*2)/2);
+  go('calculator');
+});
+renderProducts('All');
+
+/* ---------- calculator ---------- */
+var lastAdd=null;
+function animateNum(el,to){
+  var from=parseFloat(el.dataset.v||'0'); el.dataset.v=to;
+  if(reduce){el.textContent=rupee(to);return;}
+  var t0=null;
+  function f(t){
+    if(!t0)t0=t;
+    var p=Math.min((t-t0)/620,1), e=1-Math.pow(1-p,3);
+    el.textContent=rupee(from+(to-from)*e);
+    if(p<1) requestAnimationFrame(f);
+  }
+  requestAnimationFrame(f);
+}
+function calc(silent){
+  var qty=Math.max(0,parseFloat($('#cQty').value)||0);
+  var cur=Math.max(0,parseFloat($('#cCur').value)||0);
+  var dir=Math.max(0,parseFloat($('#cDir').value)||0);
+  var cost=Math.max(0,parseFloat($('#cCost').value)||0);
+
+  $('#vQty').textContent=qty.toLocaleString('en-IN');
+  $('#vCur').textContent='₹'+cur;
+  $('#vDir').textContent='₹'+dir;
+  $('#vCost').textContent=rupee(cost);
+  if(document.activeElement!==$('#cQtyN')) $('#cQtyN').value=qty;
+  if(document.activeElement!==$('#cCostN')) $('#cCostN').value=cost;
+
+  var curRev=qty>0?qty*cur:0;
+  var dirRev=qty>0?(qty*dir-cost):0;
+  var add=dirRev-curRev;
+
+  animateNum($('#rCur'),curRev);
+  animateNum($('#rDir'),dirRev);
+  animateNum($('#rAdd'),add);
+
+  var pct = curRev>0 ? (add/curRev)*100 : (add>0?100:0);
+  var pctTxt;
+  if(qty===0) pctTxt='Enter a quantity to see the comparison';
+  else if(curRev===0 && add>0) pctTxt='No current earnings entered for comparison';
+  else if(add>=0) pctTxt='Potential increase: +'+pct.toFixed(0)+'%';
+  else pctTxt='Potential decrease: '+pct.toFixed(0)+'%';
+  $('#rPct').textContent=pctTxt;
+
+  var max=Math.max(curRev,dirRev,1);
+  $('#barCur').style.width=Math.max(0,(curRev/max)*100)+'%';
+  $('#barDir').style.width=Math.max(0,(dirRev/max)*100)+'%';
+
+  var msg=$('#calcMsg'); msg.className='calc-msg';
+  if(qty<=0){msg.className='calc-msg warn';msg.textContent='Set a quantity above zero to calculate revenue.';}
+  else if(dirRev<0){msg.className='calc-msg bad';msg.textContent='Delivery and packaging cost is higher than the whole direct sale. Lower the cost or raise the direct price.';}
+  else if(dir<cur){msg.className='calc-msg bad';msg.textContent='The direct-sale price is below what you already receive. Direct selling only helps above ₹'+cur+'/kg here.';}
+  else if(add<0){msg.className='calc-msg warn';msg.textContent='Costs are eating the gain. A direct price above ₹'+((curRev+cost)/(qty||1)).toFixed(1)+'/kg would break even.';}
+  else if(add===0 && curRev>0){msg.className='calc-msg warn';msg.textContent='Both routes earn the same at these values.';}
+
+  $('#rAddLabel').textContent = add<0 ? 'Estimated shortfall against current earnings' : 'Estimated additional revenue';
+  var big=$('#bigRes');
+  big.style.background = add>0 ? 'var(--wheat)' : (add<0 ? '#D9CFC0' : '#EDE6D8');
+  if(!silent && add>0 && lastAdd!==null && add!==lastAdd && !reduce){
+    big.classList.remove('pulse'); void big.offsetWidth; big.classList.add('pulse');
+  }
+  lastAdd=add;
+  store.set('calc',{qty:qty,cur:cur,dir:dir,cost:cost});
+}
+['#cQty','#cCur','#cDir','#cCost'].forEach(function(id){$(id).addEventListener('input',function(){calc(false);});});
+$('#cQtyN').addEventListener('input',function(){
+  var v=Math.min(10000,Math.max(0,parseFloat(this.value)||0)); $('#cQty').value=v; calc(false);
+});
+$('#cCostN').addEventListener('input',function(){
+  var v=Math.min(40000,Math.max(0,parseFloat(this.value)||0)); $('#cCost').value=v; calc(false);
+});
+$('#cCrop').addEventListener('change',function(){
+  var presets={Tomatoes:[20,28],Potatoes:[16,24],Wheat:[23,32],Carrots:[24,35],Corn:[21,30],Onions:[18,26]};
+  var p=presets[this.value]||[20,28];
+  $('#cCur').value=p[0]; $('#cDir').value=p[1]; calc(false);
+});
+$('#cReset').addEventListener('click',function(){
+  $('#cQty').value=1000;$('#cCur').value=20;$('#cDir').value=28;$('#cCost').value=3000;$('#cCrop').value='Tomatoes';calc(true);
+});
+(function restoreCalc(){
+  var s=store.get('calc',null); if(!s) return;
+  $('#cQty').value=s.qty;$('#cCur').value=s.cur;$('#cDir').value=s.dir;$('#cCost').value=s.cost;
+})();
+calc(true);
+
+/* ---------- survey ---------- */
+var QS=[
+ {q:'Do you currently buy vegetables or fruits directly from a farmer?',o:['Yes, regularly','Occasionally','No, never']},
+ {q:'Where do you normally buy vegetables and fruits?',o:['Local market or mandi','Supermarket','Online grocery app','Street vendor']},
+ {q:'Would you buy directly from farmers online?',o:['Yes','Maybe, depends on price','No']},
+ {q:'What matters most when you buy produce?',o:['Price','Freshness','Quality','Knowing the farmer']},
+ {q:'Would you pay slightly more if the farmer received a larger share?',o:['Yes, up to 10% more','Yes, up to 5% more','Only at the same price','No']},
+ {q:'Which delivery method would you prefer?',o:['Home delivery','Neighbourhood pickup point','Collect from the farm','Weekly subscription box']},
+ {q:'How often would you buy this way?',o:['Twice a week or more','Weekly','Twice a month','Rarely']},
+ {q:'What would make you trust an online farmer marketplace?',o:['Verified farmer profiles','Photos of the actual harvest','Ratings from other buyers','A clear return policy']},
+ {q:'What would stop you from buying directly?',o:['Uncertain quality','Delivery delays','Minimum order size','Payment safety']},
+ {q:'Would you recommend a platform like Farm2Consumer?',o:['Definitely','Probably','Not sure','No']}
+];
+var qi=0, answers=store.get('answers',{});
+function renderQ(){
+  var q=QS[qi];
+  $('#qCount').textContent='Question '+(qi+1)+' of '+QS.length;
+  $('#qFill').style.width=(((qi+1)/QS.length)*100)+'%';
+  var body=$('#qBody');
+  body.className='qfade';
+  body.innerHTML='<div class="qtext">'+q.q+'</div><div class="opts">'+q.o.map(function(o,i){
+    return '<button class="opt'+(answers[qi]===i?' on':'')+'" data-i="'+i+'"><span class="dot"></span><span>'+o+'</span></button>';
+  }).join('')+'</div>';
+  void body.offsetWidth;
+  $('#qBack').style.visibility=qi===0?'hidden':'visible';
+  $('#qNext').textContent=qi===QS.length-1?'Submit answers':'Next';
+  $('#qNext').disabled=answers[qi]===undefined;
+  $('#qNext').style.opacity=answers[qi]===undefined?.45:1;
+}
+$('#qBody').addEventListener('click',function(e){
+  var b=e.target.closest('.opt'); if(!b) return;
+  answers[qi]=+b.dataset.i; store.set('answers',answers);
+  $$('.opt',this).forEach(function(o){o.classList.remove('on');});
+  b.classList.add('on');
+  $('#qNext').disabled=false; $('#qNext').style.opacity=1;
+  if(qi<QS.length-1) setTimeout(function(){qi++;renderQ();}, reduce?0:260);
+});
+$('#qNext').addEventListener('click',function(){
+  if(answers[qi]===undefined) return;
+  if(qi<QS.length-1){qi++;renderQ();return;}
+  $('#qFill').style.width='100%';
+  $('#surveyCard').classList.add('hidden'); $('#surveyDone').classList.remove('hidden');
+  store.set('submitted',true);
+});
+$('#qBack').addEventListener('click',function(){if(qi>0){qi--;renderQ();}});
+$('#qRestart').addEventListener('click',function(){
+  qi=0; answers={}; store.set('answers',answers);
+  $('#surveyDone').classList.add('hidden'); $('#surveyCard').classList.remove('hidden'); renderQ();
+});
+renderQ();
+
+/* ---------- dashboard charts ---------- */
+var BUY=[{l:'Local market',v:41},{l:'Supermarket',v:26},{l:'Online app',v:19},{l:'Direct from farmer',v:14}];
+var VALUE=[{l:'Freshness',v:38},{l:'Price',v:31},{l:'Quality',v:20},{l:'Farmer identity',v:11}];
+var chartsDrawn=false;
+function tip(el,text){
+  var box=$('#tip');
+  el.addEventListener('mouseenter',function(){box.textContent=text;box.classList.add('show');});
+  el.addEventListener('mousemove',function(e){box.style.left=e.clientX+'px';box.style.top=e.clientY+'px';});
+  el.addEventListener('mouseleave',function(){box.classList.remove('show');});
+}
+function drawCharts(){
+  if(chartsDrawn){return;} chartsDrawn=true;
+  // donut
+  var arc=$('#donutArc'), c=2*Math.PI*72;
+  arc.setAttribute('stroke-dasharray',c);
+  arc.setAttribute('stroke-dashoffset',c);
+  setTimeout(function(){arc.setAttribute('stroke-dashoffset',c*(1-0.72));}, reduce?0:180);
+  tip(arc,'Interested in direct selling — 18 of 25 farmers (72%)');
+  // vertical bars
+  var vb=$('#vbars'); vb.innerHTML='';
+  var maxv=Math.max.apply(null,BUY.map(function(b){return b.v;}));
+  BUY.forEach(function(b,i){
+    var d=document.createElement('div'); d.className='vbar';
+    d.innerHTML='<div class="col" style="background:linear-gradient(180deg,#3FA45B,#1B4A2E)"></div>'+
+                '<small>'+b.l+'<br><b style="color:var(--forest)">'+b.v+'%</b></small>';
+    vb.appendChild(d);
+    tip(d, b.l+' — '+b.v+' of 100 consumers');
+    setTimeout(function(){d.querySelector('.col').style.height=(b.v/maxv*82)+'%';}, reduce?0:120+i*110);
+  });
+  // horizontal bars
+  var hb=$('#hbars'); hb.innerHTML='';
+  var cols=['#1B4A2E','#2E8B4F','#7FBF8E','#E0A32E'];
+  VALUE.forEach(function(v,i){
+    var d=document.createElement('div'); d.className='hbar';
+    d.innerHTML='<small><span>'+v.l+'</span><span>'+v.v+'%</span></small><div class="track"><div class="fill" style="background:'+cols[i]+'"></div></div>';
+    hb.appendChild(d);
+    tip(d, v.l+' — chosen by '+v.v+' of 100 consumers');
+    setTimeout(function(){d.querySelector('.fill').style.width=v.v+'%';}, reduce?0:150+i*120);
+  });
+}
+
+/* ---------- wheat sway on CTA ---------- */
+(function wheat(){
+  if(reduce) return;
+  var w1=$('#wheat1'), w2=$('#wheat2'); if(!w1) return;
+  var t=0;
+  setInterval(function(){
+    t+=0.03;
+    w1.setAttribute('transform','translate('+(Math.sin(t)*10).toFixed(1)+',0)');
+    w2.setAttribute('transform','translate('+(Math.cos(t*0.8)*7).toFixed(1)+',0)');
+  },50);
+})();
+
+/* ---------- boot ---------- */
+observeAll(document);
+var initial=(location.hash||'#home').replace('#','');
+go(pages.indexOf(initial)>=0?initial:'home',false);
+window.addEventListener('hashchange',function(){go((location.hash||'#home').replace('#',''),false);});
+})();
+</script>
+
+</body>
+</html>
